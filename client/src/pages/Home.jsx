@@ -18,7 +18,7 @@ const Home = () => {
       body: JSON.stringify({ name }),
     });
     const json = await response.json();
-    navigate(`${json.id}`);
+    navigate(`${json.id}`, { state: { creatorFromHome: name } });
   };
 
   return (

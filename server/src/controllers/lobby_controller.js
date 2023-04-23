@@ -10,4 +10,13 @@ const createLobby = async (req, res) => {
   res.json({ id: lobbyId });
 };
 
-export { createLobby };
+const checkLobby = async (req, res) => {
+  const lobbyId = req.params.lobbyId;
+  const lobby = await db.collection("lobbies").findOne({ id: lobbyId });
+  if (!lobby) {
+    return res.status(400).json({ message: "lobby couldn't found" });
+  }
+  return res.status(200).json(lobby);
+};
+
+export { createLobby, checkLobby };

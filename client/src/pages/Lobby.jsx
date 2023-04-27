@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import io from "socket.io-client";
+import LobbyTitle from "../components/Lobby/LobbyTitle";
+import LobbyNotFound from "../components/Lobby/LobbyNotFound";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -15,9 +17,11 @@ const Lobby = () => {
       transports: ["websocket"],
       query: {
         lobbyId,
+        username: name || creatorFromHome,
       },
     });
     socket.on("connect", () => {
+      socket.emit("joinRoom", lobbyId, name || creatorFromHome);
       console.log("new socket connection");
     });
     socket.on("new_player", (players) => {
@@ -59,10 +63,10 @@ const Lobby = () => {
   };
 
   return (
-    <div>
+    <div className="lobby">
       {creator ? (
-        <div>
-          <h1>Lobby of {creator}</h1>
+        <div className="lobby-inner-section">
+          <LobbyTitle creator={creator} />
           {players.map((player, index) => {
             return (
               <h2 key={index}>
@@ -83,7 +87,7 @@ const Lobby = () => {
           )}
         </div>
       ) : (
-        <h1>Lobby couldn't found</h1>
+        <LobbyNotFound />
       )}
     </div>
   );

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import HomeTitle from "../components/Home/HomeTitle";
+import HomeForm from "../components/Home/HomeForm";
 
 const Home = () => {
   const [name, setName] = useState("");
@@ -22,17 +24,9 @@ const Home = () => {
   };
 
   return (
-    <div>
-      <h1>Yassah</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          onChange={(event) => {
-            setName(event.target.value);
-          }}
-        />
-        <button type="submit">Create lobby</button>
-      </form>
+    <div className="home">
+      <HomeTitle title="Yassah" />
+      <HomeForm handleSubmit={handleSubmit} setName={setName} />
     </div>
   );
 };

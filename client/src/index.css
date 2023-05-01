@@ -71,7 +71,8 @@ html, body {
 	color: #FF6000;
 	height: 100%;
 	display: flex;
-	justify-content: center;
+	flex-direction: column;
+	justify-content: space-around;
 	align-items: center;
 }
 
@@ -79,4 +80,32 @@ html, body {
 	font-family: 'Sigmar', cursive;
 	letter-spacing: 0.2rem;
 	font-size: 3rem;
+}
+
+.lobby-teams {
+	display: flex;
+	height: 50%;
+	width: 90%;
+	justify-content: space-around;
+}
+
+.lobby-team-container {
+	width: 20%;
+	height: 50%;
+	color: #ffffff;
+}
+
+.lobby-team-container ul {
+	width: 100%;
+	height: 100%;
+	padding: 2%;
+	border-radius: 5%;
+}
+
+.blue-team {
+	background-color: #26b8f7;
+}
+
+.red-team {
+	background-color: #f72637;
 }

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import io from "socket.io-client";
 import LobbyTitle from "../components/Lobby/LobbyTitle";
 import LobbyNotFound from "../components/Lobby/LobbyNotFound";
+import GameSection from "../components/Lobby/GameSection";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -10,7 +11,10 @@ const Lobby = () => {
   const [creator, setCreator] = useState("");
   const [players, setPlayers] = useState([]);
   const [name, setName] = useState("");
+  const [blueTeam, setBlueTeam] = useState([]);
+  const [redTeam, setRedTeam] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
+  const [socketParam, setSocketParam] = useState(null);
 
   const connectToSocket = () => {
     const socket = io(BASE_URL, {
@@ -21,13 +25,25 @@ const Lobby = () => {
       },
     });
     socket.on("connect", () => {
-      socket.emit("joinRoom", lobbyId, name || creatorFromHome);
-      console.log("new socket connection");
+      socket.emit("join_room", lobbyId, name || creatorFromHome);
     });
-    socket.on("new_player", (players) => {
-      console.log("connected players: ", players);
+    socket.on("new_player", (players, bluePlayers, redPlayers) => {
+      setPlayers(players);
+      setBlueTeam(bluePlayers);
+      setRedTeam(redPlayers);
+    });
+    socket.on("new_player_in_blue", (players, bluePlayers, redPlayers) => {
+      setBlueTeam(bluePlayers);
+      setRedTeam(redPlayers);
       setPlayers(players);
     });
+    socket.on("new_player_in_red", (players, bluePlayers, redPlayers) => {
+      setRedTeam(redPlayers);
+      setBlueTeam(bluePlayers);
+      setPlayers(players);
+    });
+
+    setSocketParam(socket);
   };
 
   useEffect(() => {
@@ -44,7 +60,6 @@ const Lobby = () => {
     };
 
     if (creatorFromHome) {
-      console.log("owner From Home : ", creatorFromHome);
       setCreator(creatorFromHome);
       setIsJoined(true);
       connectToSocket();
@@ -65,15 +80,16 @@ const Lobby = () => {
   return (
     <div className="lobby">
       {creator ? (
-        <div className="lobby-inner-section">
+        <Fragment>
           <LobbyTitle creator={creator} />
-          {players.map((player, index) => {
-            return (
-              <h2 key={index}>
-                player {index}: {player}
-              </h2>
-            );
-          })}
+          <GameSection
+            socket={socketParam}
+            players={players}
+            lobbyId={lobbyId}
+            blueTeam={blueTeam}
+            redTeam={redTeam}
+          />
+
           {!isJoined && (
             <form onSubmit={handleSubmit}>
               <input
@@ -85,7 +101,7 @@ const Lobby = () => {
               <button type="submit">Join the lobby</button>
             </form>
           )}
-        </div>
+        </Fragment>
       ) : (
         <LobbyNotFound />
       )}

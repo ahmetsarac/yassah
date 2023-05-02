@@ -7,6 +7,7 @@ const GameSection = ({
   lobbyId,
   blueTeam,
   redTeam,
+  leader,
 }) => {
   const joinBlue = () => {
     socket.emit("join_blue", lobbyId);
@@ -18,9 +19,19 @@ const GameSection = ({
 
   return (
     <div className="lobby-teams">
-      <Team team={blueTeam} joinTeam={joinBlue} teamColor={"blue"} />
-      <WaitingPlayers waitingPlayers={waitingPlayers} />
-      <Team team={redTeam} joinTeam={joinRed} teamColor={"red"} />
+      <Team
+        team={blueTeam}
+        joinTeam={joinBlue}
+        teamColor={"blue"}
+        leader={leader}
+      />
+      <WaitingPlayers waitingPlayers={waitingPlayers} leader={leader} />
+      <Team
+        team={redTeam}
+        joinTeam={joinRed}
+        teamColor={"red"}
+        leader={leader}
+      />
     </div>
   );
 };

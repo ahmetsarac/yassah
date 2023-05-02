@@ -16,12 +16,14 @@ const Lobby = () => {
   const [redTeam, setRedTeam] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
   const [socketParam, setSocketParam] = useState(null);
+  const [leader, setLeader] = useState(null);
 
   const connectToSocket = () => {
     const assignTeams = (players) => {
       setWaitingPlayers(players.waiting);
       setBlueTeam(players.blue_team);
       setRedTeam(players.red_team);
+      if (!leader) setLeader(players.leader);
     };
     const socket = io(BASE_URL, {
       transports: ["websocket"],
@@ -31,7 +33,12 @@ const Lobby = () => {
       },
     });
     socket.on("connect", () => {
-      socket.emit("join_room", lobbyId, name || creatorFromHome);
+      socket.emit(
+        "join_room",
+        lobbyId,
+        name || creatorFromHome,
+        creatorFromHome ? true : false
+      );
     });
     socket.on("new_player", (players) => {
       assignTeams(players);
@@ -88,6 +95,7 @@ const Lobby = () => {
             lobbyId={lobbyId}
             blueTeam={blueTeam}
             redTeam={redTeam}
+            leader={leader}
           />
 
           {!isJoined && (

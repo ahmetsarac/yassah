@@ -1,9 +1,9 @@
-const Players = ({ players }) => {
+const WaitingPlayers = ({ waitingPlayers }) => {
   return (
     <div className="lobby-team-container">
       <ul>
-        {players?.map((player, index) => {
-          if (!player.team) {
+        {waitingPlayers?.map((player, index) => {
+          if (player.team == "WAITING") {
             return (
               <h2 key={index}>
                 player {index}: {player.username}
@@ -16,4 +16,4 @@ const Players = ({ players }) => {
   );
 };
 
-export default Players;
+export default WaitingPlayers;

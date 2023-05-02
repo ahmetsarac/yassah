@@ -4,12 +4,13 @@ import io from "socket.io-client";
 import LobbyTitle from "../components/Lobby/LobbyTitle";
 import LobbyNotFound from "../components/Lobby/LobbyNotFound";
 import GameSection from "../components/Lobby/GameSection";
+import LobbyForm from "../components/Lobby/LobbyForm";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
   const { creatorFromHome } = useLocation().state || {};
   const [creator, setCreator] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [waitingPlayers, setWaitingPlayers] = useState([]);
   const [name, setName] = useState("");
   const [blueTeam, setBlueTeam] = useState([]);
   const [redTeam, setRedTeam] = useState([]);
@@ -17,6 +18,11 @@ const Lobby = () => {
   const [socketParam, setSocketParam] = useState(null);
 
   const connectToSocket = () => {
+    const assignTeams = (players) => {
+      setWaitingPlayers(players.waiting);
+      setBlueTeam(players.blue_team);
+      setRedTeam(players.red_team);
+    };
     const socket = io(BASE_URL, {
       transports: ["websocket"],
       query: {
@@ -27,20 +33,14 @@ const Lobby = () => {
     socket.on("connect", () => {
       socket.emit("join_room", lobbyId, name || creatorFromHome);
     });
-    socket.on("new_player", (players, bluePlayers, redPlayers) => {
-      setPlayers(players);
-      setBlueTeam(bluePlayers);
-      setRedTeam(redPlayers);
+    socket.on("new_player", (players) => {
+      assignTeams(players);
     });
-    socket.on("new_player_in_blue", (players, bluePlayers, redPlayers) => {
-      setBlueTeam(bluePlayers);
-      setRedTeam(redPlayers);
-      setPlayers(players);
+    socket.on("new_player_in_blue", (players) => {
+      assignTeams(players);
     });
-    socket.on("new_player_in_red", (players, bluePlayers, redPlayers) => {
-      setRedTeam(redPlayers);
-      setBlueTeam(bluePlayers);
-      setPlayers(players);
+    socket.on("new_player_in_red", (players) => {
+      assignTeams(players);
     });
 
     setSocketParam(socket);
@@ -84,22 +84,14 @@ const Lobby = () => {
           <LobbyTitle creator={creator} />
           <GameSection
             socket={socketParam}
-            players={players}
+            waitingPlayers={waitingPlayers}
             lobbyId={lobbyId}
             blueTeam={blueTeam}
             redTeam={redTeam}
           />
 
           {!isJoined && (
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                onChange={(event) => {
-                  setName(event.target.value);
-                }}
-              />
-              <button type="submit">Join the lobby</button>
-            </form>
+            <LobbyForm handleSubmit={handleSubmit} setName={setName} />
           )}
         </Fragment>
       ) : (

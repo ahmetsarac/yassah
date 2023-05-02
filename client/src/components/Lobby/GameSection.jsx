@@ -1,7 +1,13 @@
-import Players from "./Players";
+import WaitingPlayers from "./WaitingPlayers";
 import Team from "./Team";
 
-const GameSection = ({ socket, players, lobbyId, blueTeam, redTeam }) => {
+const GameSection = ({
+  socket,
+  waitingPlayers,
+  lobbyId,
+  blueTeam,
+  redTeam,
+}) => {
   const joinBlue = () => {
     socket.emit("join_blue", lobbyId);
   };
@@ -13,7 +19,7 @@ const GameSection = ({ socket, players, lobbyId, blueTeam, redTeam }) => {
   return (
     <div className="lobby-teams">
       <Team team={blueTeam} joinTeam={joinBlue} teamColor={"blue"} />
-      <Players players={players} />
+      <WaitingPlayers waitingPlayers={waitingPlayers} />
       <Team team={redTeam} joinTeam={joinRed} teamColor={"red"} />
     </div>
   );

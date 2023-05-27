@@ -13,7 +13,6 @@ const socketController = (io) => {
       socket.username = username;
       socket.team = "WAITING";
       socket.isLeader = isLeader;
-      console.log(socket.isLeader);
       socket.join(lobbyId);
       const sockets = await io.in(lobbyId).fetchSockets();
       const players = {};
@@ -36,6 +35,17 @@ const socketController = (io) => {
       assignTeams(players, sockets);
       io.to(lobbyId).emit("new_player_in_red", players);
     });
+
+    socket.on("game_start", async (lobbyId, count) => {
+      console.log("game has started", count);
+      var countdown = setInterval(function () {
+        io.to(lobbyId).volatile.emit("counter_start", count);
+        count--;
+        if (count === -1) {
+          clearInterval(countdown);
+        }
+      }, 1000);
+    });
   });
 };
 
@@ -43,7 +53,7 @@ const assignTeams = (players, sockets) => {
   const waiting_players = [];
   const players_of_blue = [];
   const players_of_red = [];
-  let leader;
+  let leaderId;
   for (var player of sockets) {
     const playerObj = {
       id: player.id,
@@ -53,9 +63,9 @@ const assignTeams = (players, sockets) => {
     if (player.team == "WAITING") waiting_players.push(playerObj);
     if (player.team == "BLUE") players_of_blue.push(playerObj);
     if (player.team == "RED") players_of_red.push(playerObj);
-    if (player.isLeader) leader = player.id;
+    if (player.isLeader) leaderId = player.id;
   }
-  players.leader = leader;
+  players.leaderId = leaderId;
   players.waiting = waiting_players;
   players.blue_team = players_of_blue;
   players.red_team = players_of_red;

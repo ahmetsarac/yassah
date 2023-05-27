@@ -1,5 +1,6 @@
 import WaitingPlayers from "./WaitingPlayers";
 import Team from "./Team";
+import Card from "./Card";
 
 const GameSection = ({
   socket,
@@ -7,8 +8,11 @@ const GameSection = ({
   lobbyId,
   blueTeam,
   redTeam,
-  leader,
+  leaderId,
+  isGameStarted,
 }) => {
+  console.log("game is statred", isGameStarted);
+
   const joinBlue = () => {
     socket.emit("join_blue", lobbyId);
   };
@@ -23,14 +27,18 @@ const GameSection = ({
         team={blueTeam}
         joinTeam={joinBlue}
         teamColor={"blue"}
-        leader={leader}
+        leaderId={leaderId}
       />
-      <WaitingPlayers waitingPlayers={waitingPlayers} leader={leader} />
+      {isGameStarted ? (
+        <Card />
+      ) : (
+        <WaitingPlayers waitingPlayers={waitingPlayers} leaderId={leaderId} />
+      )}
       <Team
         team={redTeam}
         joinTeam={joinRed}
         teamColor={"red"}
-        leader={leader}
+        leaderId={leaderId}
       />
     </div>
   );

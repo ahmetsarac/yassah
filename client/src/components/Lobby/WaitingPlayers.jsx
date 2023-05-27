@@ -1,4 +1,4 @@
-const WaitingPlayers = ({ waitingPlayers, leader }) => {
+const WaitingPlayers = ({ waitingPlayers, leaderId }) => {
   return (
     <div className="lobby-team-container">
       <ul>
@@ -7,7 +7,7 @@ const WaitingPlayers = ({ waitingPlayers, leader }) => {
             return (
               <h2 key={index}>
                 player {index}: {player.username}{" "}
-                {player.id == leader && "(leader)"}
+                {player.id == leaderId && "👑"}
               </h2>
             );
           }

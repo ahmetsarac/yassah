@@ -5,6 +5,7 @@ import LobbyTitle from "../components/Lobby/LobbyTitle";
 import LobbyNotFound from "../components/Lobby/LobbyNotFound";
 import GameSection from "../components/Lobby/GameSection";
 import LobbyForm from "../components/Lobby/LobbyForm";
+import StartButton from "../components/Lobby/StartButton";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -16,14 +17,19 @@ const Lobby = () => {
   const [redTeam, setRedTeam] = useState([]);
   const [isJoined, setIsJoined] = useState(false);
   const [socketParam, setSocketParam] = useState(null);
-  const [leader, setLeader] = useState(null);
+  const [leaderId, setLeaderId] = useState(null);
+  const [timer, setTimer] = useState(null);
+  const [isGameStarted, setIsGameStarted] = useState(null);
+  var isStarted = null;
 
   const connectToSocket = () => {
     const assignTeams = (players) => {
       setWaitingPlayers(players.waiting);
       setBlueTeam(players.blue_team);
       setRedTeam(players.red_team);
-      if (!leader) setLeader(players.leader);
+      console.log("blue team ", blueTeam);
+      console.log("new player", players);
+      if (!leaderId) setLeaderId(players.leaderId);
     };
     const socket = io(BASE_URL, {
       transports: ["websocket"],
@@ -48,6 +54,14 @@ const Lobby = () => {
     });
     socket.on("new_player_in_red", (players) => {
       assignTeams(players);
+    });
+    socket.on("counter_start", (count) => {
+      if (isStarted === null) {
+        isStarted = true;
+        setIsGameStarted(true);
+      }
+      console.log(count);
+      setTimer(count);
     });
 
     setSocketParam(socket);
@@ -89,13 +103,20 @@ const Lobby = () => {
       {creator ? (
         <Fragment>
           <LobbyTitle creator={creator} />
+          <StartButton
+            socketParam={socketParam}
+            leaderId={leaderId}
+            lobbyId={lobbyId}
+          />
+          <p>Timer: {timer}</p>
           <GameSection
             socket={socketParam}
             waitingPlayers={waitingPlayers}
             lobbyId={lobbyId}
             blueTeam={blueTeam}
             redTeam={redTeam}
-            leader={leader}
+            leaderId={leaderId}
+            isGameStarted={isGameStarted}
           />
 
           {!isJoined && (

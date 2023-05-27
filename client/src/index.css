@@ -109,3 +109,28 @@ html, body {
 .red-team {
 	background-color: #f72637;
 }
+
+/* Cards */
+.card-section  {
+	
+}
+
+.card-list {
+	background-color: wheat;
+	padding: 10px 20px 10px 20px;
+	list-style-type: none;
+	border-radius: 20px;
+}
+
+.card-list li {
+	padding: 10px;
+}
+
+.word {
+	color: white;
+	background-color: #454545;
+}
+
+.banned-word {
+	color: red;
+}

@@ -9,6 +9,19 @@ const Card = () => {
           return <li className="banned-word">{bannedWord}</li>;
         })}
       </ul>
+      <div className="card-buttons">
+        <ul>
+          <li>
+            <button>Dogru</button>
+          </li>
+          <li>
+            <button>Pas</button>
+          </li>
+          <li>
+            <button>Yassah</button>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

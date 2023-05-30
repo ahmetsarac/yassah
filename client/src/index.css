@@ -124,6 +124,7 @@ html, body {
 
 .card-list li {
 	padding: 10px;
+	text-align: center;
 }
 
 .word {
@@ -133,4 +134,14 @@ html, body {
 
 .banned-word {
 	color: red;
+}
+
+
+.card-buttons ul{
+	list-style-type: none;
+	display: flex;
+}
+
+.card-buttons ul li, .card-buttons ul li button{
+	padding: 10px;
 }

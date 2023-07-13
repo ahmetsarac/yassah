@@ -4,13 +4,14 @@ const Team = ({ team, joinTeam, teamColor, leaderId }) => {
       <ul className={`${teamColor}-team`}>
         {team?.map((player, index) => {
           return (
-            <li key={index}>
-              player: {player.username} {player.id == leaderId && "👑"}
+            <li className="player-name" key={index}>
+              {player.username} {player.id == leaderId && "👑"}
             </li>
           );
         })}
+
       </ul>
-      <button onClick={joinTeam}>Join the {teamColor} team</button>
+      <button className="join-team-button" onClick={joinTeam}>Join the {teamColor} team</button>
     </div>
   );
 };

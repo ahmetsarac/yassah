@@ -1,11 +1,10 @@
-const StartButton = ({ socketParam, leaderId, lobbyId }) => {
+const StartButton = ({ socket, leaderId, lobbyId }) => {
   const handleClick = (event) => {
-    console.log("butotn itkadf");
     //event.preventDefault();
-    socketParam.emit("game_start", lobbyId, 10);
+    socket.emit("game_start", lobbyId, 10);
   };
 
-  if (socketParam && socketParam.id == leaderId) {
+  if (socket && socket.id == leaderId) {
     return <button onClick={handleClick}>Baslat</button>;
   } else {
     return <></>;

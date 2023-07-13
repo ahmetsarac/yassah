@@ -6,6 +6,7 @@ import LobbyNotFound from "../components/Lobby/LobbyNotFound";
 import GameSection from "../components/Lobby/GameSection";
 import LobbyForm from "../components/Lobby/LobbyForm";
 import StartButton from "../components/Lobby/StartButton";
+import GameInfo from "../components/Lobby/GameInfo";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -20,6 +21,9 @@ const Lobby = () => {
   const [leaderId, setLeaderId] = useState(null);
   const [timer, setTimer] = useState(null);
   const [isGameStarted, setIsGameStarted] = useState(null);
+  const [blueTeamScore, setBlueTeamScore] = useState(0);
+  const [redTeamScore, setRedTeamScore] = useState(0);
+  const [currentWord, setCurrentWord] = useState({});
   var isStarted = null;
 
   const connectToSocket = () => {
@@ -46,14 +50,17 @@ const Lobby = () => {
         creatorFromHome ? true : false
       );
     });
-    socket.on("new_player", (players) => {
+    socket.on("new_player", (players, id) => {
       assignTeams(players);
+      if (socket.id === id) socket.team = "WAITING";
     });
-    socket.on("new_player_in_blue", (players) => {
+    socket.on("new_player_in_blue", (players, id) => {
       assignTeams(players);
+      if (socket.id === id) socket.team = "BLUE";
     });
-    socket.on("new_player_in_red", (players) => {
+    socket.on("new_player_in_red", (players, id) => {
       assignTeams(players);
+      if (socket.id === id) socket.team = "RED";
     });
     socket.on("counter_start", (count) => {
       if (isStarted === null) {
@@ -63,6 +70,19 @@ const Lobby = () => {
       console.log(count);
       setTimer(count);
     });
+    socket.on("game_start_word", (current_word) => {
+      console.log("game word start: ", current_word);
+      setCurrentWord(current_word);
+      console.log("game word start 2 : ", currentWord);
+    });
+    socket.on(
+      "team_score_up",
+      (blue_team_score, red_team_score, current_word) => {
+        setBlueTeamScore(blue_team_score);
+        setRedTeamScore(red_team_score);
+        setCurrentWord(current_word);
+      }
+    );
 
     setSocketParam(socket);
   };
@@ -104,11 +124,15 @@ const Lobby = () => {
         <Fragment>
           <LobbyTitle creator={creator} />
           <StartButton
-            socketParam={socketParam}
+            socket={socketParam}
             leaderId={leaderId}
             lobbyId={lobbyId}
           />
-          <p>Timer: {timer}</p>
+          <GameInfo
+            timer={timer}
+            blueTeamScore={blueTeamScore}
+            redTeamScore={redTeamScore}
+          />
           <GameSection
             socket={socketParam}
             waitingPlayers={waitingPlayers}
@@ -117,6 +141,7 @@ const Lobby = () => {
             redTeam={redTeam}
             leaderId={leaderId}
             isGameStarted={isGameStarted}
+            currentWord={currentWord}
           />
 
           {!isJoined && (

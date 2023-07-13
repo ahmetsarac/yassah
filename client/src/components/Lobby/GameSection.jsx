@@ -10,8 +10,9 @@ const GameSection = ({
   redTeam,
   leaderId,
   isGameStarted,
+  currentWord,
 }) => {
-  console.log("game is statred", isGameStarted);
+  console.log("game is started", isGameStarted);
 
   const joinBlue = () => {
     socket.emit("join_blue", lobbyId);
@@ -30,7 +31,7 @@ const GameSection = ({
         leaderId={leaderId}
       />
       {isGameStarted ? (
-        <Card />
+        <Card socket={socket} lobbyId={lobbyId} currentWord={currentWord} />
       ) : (
         <WaitingPlayers waitingPlayers={waitingPlayers} leaderId={leaderId} />
       )}

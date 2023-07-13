@@ -1,24 +1,41 @@
+import { useState } from "react";
 import WORDS from "../../util/mock_data";
 
-const Card = () => {
+const Card = ({ socket, lobbyId, currentWord }) => {
+  const correctButtonHandle = () => {
+    socket.emit("correct_button_pressed", lobbyId, socket.team);
+  };
+  const passButtonHandle = () => {
+    socket.emit("pass_button_pressed");
+  };
+  const yassahButtonHandle = () => {
+    socket.emit("yassah_button_pressed");
+  };
+
   return (
     <div className="card-section">
       <ul className="card-list">
-        <li className="word">{WORDS[0].word}</li>
-        {WORDS[0].bannedWords.map((bannedWord) => {
+        <li className="word">{currentWord?.word}</li>
+        {currentWord?.bannedWords?.map((bannedWord) => {
           return <li className="banned-word">{bannedWord}</li>;
         })}
       </ul>
       <div className="card-buttons">
         <ul>
           <li>
-            <button>Dogru</button>
+            <button onClick={correctButtonHandle} className="correct-button">
+              Dogru
+            </button>
           </li>
           <li>
-            <button>Pas</button>
+            <button onClick={passButtonHandle} className="pass-button">
+              Pas
+            </button>
           </li>
           <li>
-            <button>Yassah</button>
+            <button onClick={yassahButtonHandle} className="yassah-button">
+              Yassah
+            </button>
           </li>
         </ul>
       </div>

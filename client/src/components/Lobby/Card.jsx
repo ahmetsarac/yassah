@@ -1,15 +1,15 @@
 import { useState } from "react";
 import WORDS from "../../util/mock_data";
 
-const Card = ({ socket, lobbyId, currentWord }) => {
+const Card = ({ socket, lobbyId, currentWord, blueTeamPass, redTeamPass }) => {
   const correctButtonHandle = () => {
     socket.emit("correct_button_pressed", lobbyId, socket.team);
   };
   const passButtonHandle = () => {
-    socket.emit("pass_button_pressed");
+    socket.emit("pass_button_pressed", lobbyId, socket.team);
   };
   const yassahButtonHandle = () => {
-    socket.emit("yassah_button_pressed");
+    socket.emit("yassah_button_pressed", lobbyId, socket.team);
   };
 
   return (
@@ -28,8 +28,8 @@ const Card = ({ socket, lobbyId, currentWord }) => {
             </button>
           </li>
           <li>
-            <button onClick={passButtonHandle} className="pass-button">
-              Pas
+            <button disabled={socket.team == "BLUE" && blueTeamPass == 0 || socket.team == "RED" && redTeamPass == 0} onClick={passButtonHandle} className="pass-button">
+              Pas ({socket.team == "BLUE" ? blueTeamPass : redTeamPass})
             </button>
           </li>
           <li>

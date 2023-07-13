@@ -11,6 +11,8 @@ const GameSection = ({
   leaderId,
   isGameStarted,
   currentWord,
+  blueTeamPass,
+  redTeamPass
 }) => {
   console.log("game is started", isGameStarted);
 
@@ -31,7 +33,7 @@ const GameSection = ({
         leaderId={leaderId}
       />
       {isGameStarted ? (
-        <Card socket={socket} lobbyId={lobbyId} currentWord={currentWord} />
+        <Card socket={socket} lobbyId={lobbyId} currentWord={currentWord} blueTeamPass={blueTeamPass} redTeamPass={redTeamPass}/>
       ) : (
         <WaitingPlayers waitingPlayers={waitingPlayers} leaderId={leaderId} />
       )}

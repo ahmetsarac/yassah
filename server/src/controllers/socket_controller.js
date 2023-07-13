@@ -42,10 +42,12 @@ const socketController = (io) => {
       let roomObj = io.sockets.adapter.rooms.get(lobbyId);
       roomObj.blue_team_score = 0;
       roomObj.red_team_score = 0;
+	  roomObj.blue_team_pass = 3;
+	  roomObj.red_team_pass = 3;
       roomObj.current_word = WORDS[0];
       console.log("game has started", count);
       console.log(roomObj.current_word);
-      io.to(lobbyId).emit("game_start_word", roomObj.current_word);
+      io.to(lobbyId).emit("game_start_word", roomObj.current_word, roomObj.blue_team_pass, roomObj.red_team_pass);
       var countdown = setInterval(function () {
         io.to(lobbyId).volatile.emit("counter_start", count);
         count--;
@@ -73,6 +75,26 @@ const socketController = (io) => {
       console.log("blue team score: ", roomObj.blue_team_score);
       console.log("red team score: ", roomObj.red_team_score);
     });
+
+	socket.on("pass_button_pressed", (lobbyId, team) => {
+	  let roomObj = io.sockets.adapter.rooms.get(lobbyId);
+	  roomObj.current_word = WORDS[Math.floor(Math.random() * (WORDS.length - 1 - 0 + 1) + 0)];
+
+	  if (team == "BLUE") {
+		  roomObj.blue_team_pass -= 1;
+	  } else {
+		  roomObj.red_team_pass -= 1;
+	  }
+	  io.to(lobbyId).emit(
+		  "team_pass",
+		  roomObj.blue_team_pass,
+		  roomObj.red_team_pass,
+		  roomObj.current_word
+	  );
+	  console.log("blue team score: ", roomObj.blue_team_score);
+	  console.log("red team score: ", roomObj.red_team_score);
+	});
+
   });
 };
 

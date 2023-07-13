@@ -23,6 +23,8 @@ const Lobby = () => {
   const [isGameStarted, setIsGameStarted] = useState(null);
   const [blueTeamScore, setBlueTeamScore] = useState(0);
   const [redTeamScore, setRedTeamScore] = useState(0);
+  const [blueTeamPass, setBlueTeamPass] = useState(0);
+  const [redTeamPass, setRedTeamPass] = useState(0);
   const [currentWord, setCurrentWord] = useState({});
   var isStarted = null;
 
@@ -70,10 +72,10 @@ const Lobby = () => {
       console.log(count);
       setTimer(count);
     });
-    socket.on("game_start_word", (current_word) => {
-      console.log("game word start: ", current_word);
+    socket.on("game_start_word", (current_word, blue_team_pass, red_team_pass) => {
       setCurrentWord(current_word);
-      console.log("game word start 2 : ", currentWord);
+	  setBlueTeamPass(blue_team_pass);
+	  setRedTeamPass(red_team_pass);
     });
     socket.on(
       "team_score_up",
@@ -83,6 +85,16 @@ const Lobby = () => {
         setCurrentWord(current_word);
       }
     );
+	
+	socket.on(
+      "team_pass",
+      (blue_team_pass, red_team_pass, current_word) => {
+        setBlueTeamPass(blue_team_pass);
+        setRedTeamPass(red_team_pass);
+        setCurrentWord(current_word);
+      }
+    );
+
 
     setSocketParam(socket);
   };
@@ -142,6 +154,8 @@ const Lobby = () => {
             leaderId={leaderId}
             isGameStarted={isGameStarted}
             currentWord={currentWord}
+			blueTeamPass={blueTeamPass}
+			redTeamPass={redTeamPass}
           />
 
           {!isJoined && (

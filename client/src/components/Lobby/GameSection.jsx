@@ -9,6 +9,7 @@ const GameSection = ({
   blueTeam,
   redTeam,
   leaderId,
+  currentSpeaker,
   isGameStarted,
   currentWord,
   blueTeamPass,
@@ -33,7 +34,7 @@ const GameSection = ({
         leaderId={leaderId}
       />
       {isGameStarted ? (
-        <Card socket={socket} lobbyId={lobbyId} currentWord={currentWord} blueTeamPass={blueTeamPass} redTeamPass={redTeamPass}/>
+        <Card socket={socket} lobbyId={lobbyId} currentSpeaker={currentSpeaker} currentWord={currentWord} blueTeamPass={blueTeamPass} redTeamPass={redTeamPass}/>
       ) : (
         <WaitingPlayers waitingPlayers={waitingPlayers} leaderId={leaderId} />
       )}

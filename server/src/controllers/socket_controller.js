@@ -45,9 +45,10 @@ const socketController = (io) => {
 	  roomObj.blue_team_pass = 3;
 	  roomObj.red_team_pass = 3;
       roomObj.current_word = WORDS[0];
-      console.log("game has started", count);
-      console.log(roomObj.current_word);
-      io.to(lobbyId).emit("game_start_word", roomObj.current_word, roomObj.blue_team_pass, roomObj.red_team_pass);
+	  roomObj.current_speaker = {id: socket.id, team: socket.team};
+	  console.log(roomObj);
+
+      io.to(lobbyId).emit("game_start_object", roomObj);
       var countdown = setInterval(function () {
         io.to(lobbyId).volatile.emit("counter_start", count);
         count--;

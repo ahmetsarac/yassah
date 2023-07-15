@@ -26,6 +26,7 @@ const Lobby = () => {
   const [blueTeamPass, setBlueTeamPass] = useState(0);
   const [redTeamPass, setRedTeamPass] = useState(0);
   const [currentWord, setCurrentWord] = useState({});
+  const [currentSpeaker, setCurrentSpeaker] = useState(null);
   var isStarted = null;
 
   const connectToSocket = () => {
@@ -72,10 +73,12 @@ const Lobby = () => {
       console.log(count);
       setTimer(count);
     });
-    socket.on("game_start_word", (current_word, blue_team_pass, red_team_pass) => {
-      setCurrentWord(current_word);
-	  setBlueTeamPass(blue_team_pass);
-	  setRedTeamPass(red_team_pass);
+    socket.on("game_start_object", (roomObj) => {
+      setCurrentWord(roomObj.current_word);
+	  setBlueTeamPass(roomObj.blue_team_pass);
+	  setRedTeamPass(roomObj.red_team_pass);
+	  setCurrentSpeaker(roomObj.current_speaker);
+	  console.log(roomObj);
     });
     socket.on(
       "team_score_up",
@@ -152,6 +155,7 @@ const Lobby = () => {
             blueTeam={blueTeam}
             redTeam={redTeam}
             leaderId={leaderId}
+		    currentSpeaker={currentSpeaker}
             isGameStarted={isGameStarted}
             currentWord={currentWord}
 			blueTeamPass={blueTeamPass}

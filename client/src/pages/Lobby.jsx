@@ -98,6 +98,17 @@ const Lobby = () => {
       }
     );
 
+	socket.on(
+      "team_yassah",
+      (blue_team_score, red_team_score, current_word) => {
+        setBlueTeamScore(blue_team_score);
+        setRedTeamScore(red_team_score);
+        setCurrentWord(current_word);
+      }
+    );
+
+
+
 
     setSocketParam(socket);
   };

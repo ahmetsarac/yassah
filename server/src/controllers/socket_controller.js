@@ -59,6 +59,8 @@ const socketController = (io) => {
     });
 
     socket.on("correct_button_pressed", (lobbyId, team) => {
+	  let currentRoom = socket.rooms.values();	  
+	  console.log(currentRoom);
       let roomObj = io.sockets.adapter.rooms.get(lobbyId);
       roomObj.current_word = WORDS[Math.floor(Math.random() * (WORDS.length - 1 - 0 + 1) + 0)];
 
@@ -92,9 +94,28 @@ const socketController = (io) => {
 		  roomObj.red_team_pass,
 		  roomObj.current_word
 	  );
+	});
+
+	socket.on("yassah_button_pressed", (lobbyId, team) => {
+	  let roomObj = io.sockets.adapter.rooms.get(lobbyId);
+	  roomObj.current_word = WORDS[Math.floor(Math.random() * (WORDS.length - 1 - 0 + 1) + 0)];
+
+	  if (team == "BLUE") {
+		  roomObj.blue_team_score -= 1;
+	  } else {
+		  roomObj.red_team_score -= 1;
+	  }
+	  io.to(lobbyId).emit(
+		  "team_yassah",
+		  roomObj.blue_team_score,
+		  roomObj.red_team_score,
+		  roomObj.current_word
+	  );
 	  console.log("blue team score: ", roomObj.blue_team_score);
 	  console.log("red team score: ", roomObj.red_team_score);
 	});
+
+
 
   });
 };

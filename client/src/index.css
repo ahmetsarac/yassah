@@ -194,14 +194,14 @@ html, body {
 	cursor: pointer;
 }
 
-.card-buttons ul li:nth-child(1) button{
+.card-buttons ul li button.correct-button{
 	background-color: rgb(19, 152, 19);
 }
 
-.card-buttons ul li:nth-child(2) button{
+.card-buttons ul li button.pass-button{
 	background-color: rgb(253, 253, 145);
 }
 
-.card-buttons ul li:nth-child(3) button{
+.card-buttons ul li button.yassah-button{
 	background-color: rgb(214, 18, 18);
 }

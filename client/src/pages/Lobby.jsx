@@ -5,7 +5,7 @@ import LobbyTitle from "../components/Lobby/LobbyTitle";
 import LobbyNotFound from "../components/Lobby/LobbyNotFound";
 import GameSection from "../components/Lobby/GameSection";
 import LobbyForm from "../components/Lobby/LobbyForm";
-import StartButton from "../components/Lobby/StartButton";
+import Options from "../components/Lobby/Options";
 import GameInfo from "../components/Lobby/GameInfo";
 
 const Lobby = () => {
@@ -36,7 +36,7 @@ const Lobby = () => {
       setRedTeam(players.red_team);
       console.log("blue team ", blueTeam);
       console.log("new player", players);
-      if (!leaderId) setLeaderId(players.leaderId);
+      if (!leaderId) setLeaderId(players.leader.id);
     };
     const socket = io(BASE_URL, {
       transports: ["websocket"],
@@ -75,10 +75,10 @@ const Lobby = () => {
     });
     socket.on("game_start_object", (roomObj) => {
       setCurrentWord(roomObj.current_word);
-	  setBlueTeamPass(roomObj.blue_team_pass);
-	  setRedTeamPass(roomObj.red_team_pass);
-	  setCurrentSpeaker(roomObj.current_speaker);
-	  console.log(roomObj);
+      setBlueTeamPass(roomObj.blue_team_pass);
+      setRedTeamPass(roomObj.red_team_pass);
+      setCurrentSpeaker(roomObj.current_speaker);
+      console.log(roomObj);
     });
     socket.on(
       "team_score_up",
@@ -88,17 +88,14 @@ const Lobby = () => {
         setCurrentWord(current_word);
       }
     );
-	
-	socket.on(
-      "team_pass",
-      (blue_team_pass, red_team_pass, current_word) => {
-        setBlueTeamPass(blue_team_pass);
-        setRedTeamPass(red_team_pass);
-        setCurrentWord(current_word);
-      }
-    );
 
-	socket.on(
+    socket.on("team_pass", (blue_team_pass, red_team_pass, current_word) => {
+      setBlueTeamPass(blue_team_pass);
+      setRedTeamPass(red_team_pass);
+      setCurrentWord(current_word);
+    });
+
+    socket.on(
       "team_yassah",
       (blue_team_score, red_team_score, current_word) => {
         setBlueTeamScore(blue_team_score);
@@ -106,10 +103,6 @@ const Lobby = () => {
         setCurrentWord(current_word);
       }
     );
-
-
-
-
     setSocketParam(socket);
   };
 
@@ -149,11 +142,7 @@ const Lobby = () => {
       {creator ? (
         <Fragment>
           <LobbyTitle creator={creator} />
-          <StartButton
-            socket={socketParam}
-            leaderId={leaderId}
-            lobbyId={lobbyId}
-          />
+          <Options socket={socketParam} leaderId={leaderId} lobbyId={lobbyId} />
           <GameInfo
             timer={timer}
             blueTeamScore={blueTeamScore}
@@ -166,11 +155,11 @@ const Lobby = () => {
             blueTeam={blueTeam}
             redTeam={redTeam}
             leaderId={leaderId}
-		    currentSpeaker={currentSpeaker}
+            currentSpeaker={currentSpeaker}
             isGameStarted={isGameStarted}
             currentWord={currentWord}
-			blueTeamPass={blueTeamPass}
-			redTeamPass={redTeamPass}
+            blueTeamPass={blueTeamPass}
+            redTeamPass={redTeamPass}
           />
 
           {!isJoined && (

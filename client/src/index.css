@@ -125,6 +125,25 @@ html, body {
 	background-color: #f72637;
 }
 
+/* Options */
+.options {
+	width: 40%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.options button {
+	padding: 10px;
+	margin: 10px;
+	cursor: pointer;
+}
+
+.options label{
+	padding: 10px;
+}
+
+
 /* Game Info */
 .game-info {
 	display: flex;

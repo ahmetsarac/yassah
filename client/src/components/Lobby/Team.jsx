@@ -1,4 +1,11 @@
-const Team = ({ team, joinTeam, teamColor, leaderId }) => {
+import GameState from "../../../../server/src/util/game_state";
+
+const Team = ({ gameState, team, joinTeam, teamColor, leaderId }) => {
+  const show =
+    gameState == GameState.IDLE ||
+    gameState == GameState.ERROR ||
+    gameState == GameState.OVER;
+
   return (
     <div className="lobby-team-container">
       <ul className={`${teamColor}-team`}>
@@ -9,9 +16,12 @@ const Team = ({ team, joinTeam, teamColor, leaderId }) => {
             </li>
           );
         })}
-
       </ul>
-      <button className="join-team-button" onClick={joinTeam}>Join the {teamColor} team</button>
+      {show && (
+        <button className="join-team-button" onClick={joinTeam}>
+          Join the {teamColor} team
+        </button>
+      )}
     </div>
   );
 };

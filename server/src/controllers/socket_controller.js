@@ -6,11 +6,13 @@ const socketController = (io) => {
   io.on("connection", (socket) => {
     socket.on("disconnect", async (reason) => {
       const lobby_id = socket.handshake.query.lobbyId;
+      const roomObj = io.sockets.adapter.rooms.get(lobby_id);
       socket.leave(lobby_id);
       const sockets = await io.in(lobby_id).fetchSockets();
       const players = {};
       assignTeams(players, sockets);
-      io.to(lobby_id).emit("new_player", players);
+      roomObj.players = players;
+      io.to(lobby_id).emit("new_player", roomObj.players);
     });
 
     socket.on("join_room", async (lobby_id, username, is_leader) => {
@@ -62,6 +64,7 @@ const socketController = (io) => {
           io.to(lobby_id).emit(
             "counter_finish",
             roomObj.game_state,
+            roomObj.winner_team,
             roomObj.current_speaker,
             roomObj.current_observer
           );
@@ -126,9 +129,9 @@ const socketController = (io) => {
       roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 
       if (team == "BLUE") {
-        roomObj.blue_team_pass -= 1;
+        roomObj.blue_team_pass--;
       } else {
-        roomObj.red_team_pass -= 1;
+        roomObj.red_team_pass--;
       }
       io.to(lobby_id).emit(
         "team_pass",
@@ -172,7 +175,16 @@ const timerZero = (roomObj) => {
     roomObj.round--;
   }
   if (roomObj.round == 0) {
-    roomObj.game_state = GameState.FINISHED;
+    roomObj.game_state = GameState.OVER;
+    let winner_team;
+    if (roomObj.blue_team_score > roomObj.red_team_score) {
+      winner_team = "BLUE";
+    } else if (roomObj.blue_team_score < roomObj.red_team_score) {
+      winner_team = "RED";
+    } else {
+      winner_team = "DRAW";
+    }
+    roomObj.winner_team = winner_team;
     console.log("game finish");
   }
   roomObj.current_team = roomObj.current_team == "BLUE" ? "RED" : "BLUE";

@@ -30,6 +30,7 @@ const Lobby = () => {
   const [currentObserver, setCurrentObserver] = useState(null);
   const [gameState, setGameState] = useState(GameState.IDLE);
   const [errorText, setErrorText] = useState("");
+  const [winnerTeam, setWinnerTeam] = useState(null);
 
   const connectToSocket = () => {
     const assignTeams = (players) => {
@@ -70,8 +71,9 @@ const Lobby = () => {
     });
     socket.on(
       "counter_finish",
-      (game_state, current_speaker, current_observer) => {
+      (game_state, winner_team, current_speaker, current_observer) => {
         setGameState(game_state);
+        setWinnerTeam(winner_team);
         setCurrentSpeaker(current_speaker);
         setCurrentObserver(current_observer);
       }
@@ -156,7 +158,12 @@ const Lobby = () => {
       {creator ? (
         <Fragment>
           <LobbyTitle creator={creator} />
-          <Options socket={socketParam} leaderId={leaderId} lobbyId={lobbyId} />
+          <Options
+            gameState={gameState}
+            socket={socketParam}
+            leaderId={leaderId}
+            lobbyId={lobbyId}
+          />
           <GameInfo
             timer={timer}
             blueTeamScore={blueTeamScore}
@@ -173,6 +180,7 @@ const Lobby = () => {
             leaderId={leaderId}
             currentSpeaker={currentSpeaker}
             currentObserver={currentObserver}
+            winnerTeam={winnerTeam}
             currentWord={currentWord}
             blueTeamPass={blueTeamPass}
             redTeamPass={redTeamPass}

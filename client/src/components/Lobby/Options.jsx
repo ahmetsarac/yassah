@@ -1,6 +1,7 @@
 import { Fragment, useState } from "react";
+import GameState from "../../../../server/src/util/game_state";
 
-const Options = ({ socket, leaderId, lobbyId }) => {
+const Options = ({ gameState, socket, leaderId, lobbyId }) => {
   const roundArr = [1, 2, 3, 4, 5];
   const passArr = [3, 4, 5];
   const timeArr = ["3 sn", "30 sn", "45 sn", "60 sn", "90 sn", "120 sn"];
@@ -24,57 +25,64 @@ const Options = ({ socket, leaderId, lobbyId }) => {
     setRound(event.target.value);
   };
 
+  const show =
+    gameState == GameState.IDLE ||
+    gameState == GameState.ERROR ||
+    gameState == GameState.OVER;
+
   return (
-    <div className="options">
-      {socket && socket.id == leaderId ? (
-        <Fragment>
-          <button className="start-button" onClick={handleClick}>
-            Baslat
-          </button>
-          <div className="round-setting">
-            <label>Round</label>
-            <select value={round} onChange={handleRoundChange}>
-              {roundArr.map((element, index) => {
-                return (
-                  <option key={index} value={element}>
-                    {element}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className="time-setting">
-            <label>Sure</label>
-            <select value={time} onChange={handleTimeChange}>
-              {timeArr.map((element, index) => {
-                return (
-                  <option key={index} value={element}>
-                    {element}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className="pass-setting">
-            <label>Pas hakki</label>
-            <select value={passNumber} onChange={handlePassChange}>
-              {passArr.map((element, index) => {
-                return (
-                  <option key={index} value={element}>
-                    {element}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <p>Pas hakkki: {passNumber}</p>
-          <p>Sure: {time}</p>
-        </Fragment>
-      )}
-    </div>
+    show && (
+      <div className="options">
+        {socket && socket.id == leaderId ? (
+          <Fragment>
+            <button className="start-button" onClick={handleClick}>
+              Baslat
+            </button>
+            <div className="round-setting">
+              <label>Round</label>
+              <select value={round} onChange={handleRoundChange}>
+                {roundArr.map((element, index) => {
+                  return (
+                    <option key={index} value={element}>
+                      {element}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="time-setting">
+              <label>Sure</label>
+              <select value={time} onChange={handleTimeChange}>
+                {timeArr.map((element, index) => {
+                  return (
+                    <option key={index} value={element}>
+                      {element}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="pass-setting">
+              <label>Pas hakki</label>
+              <select value={passNumber} onChange={handlePassChange}>
+                {passArr.map((element, index) => {
+                  return (
+                    <option key={index} value={element}>
+                      {element}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>Pas hakkki: {passNumber}</p>
+            <p>Sure: {time}</p>
+          </Fragment>
+        )}
+      </div>
+    )
   );
 };
 

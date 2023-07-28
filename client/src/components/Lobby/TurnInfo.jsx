@@ -1,7 +1,7 @@
 const TurnInfo = ({ currentSpeaker, currentObserver }) => {
   return (
     <p>
-      Anlatan {currentSpeaker}, Gozetleyen {currentObserver}
+      Anlatan {currentSpeaker.username}, Gozetleyen {currentObserver.username}
     </p>
   );
 };

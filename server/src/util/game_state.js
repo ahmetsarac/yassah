@@ -3,7 +3,7 @@ const GameState = {
   ERROR: 1,
   READY: 2,
   STARTED: 3,
-  FINISHED: 4,
+  OVER: 4,
 };
 
 export default GameState;

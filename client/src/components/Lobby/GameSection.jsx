@@ -4,6 +4,8 @@ import Card from "./Card";
 import GameState from "../../../../server/src/util/game_state";
 import ReadyButton from "./ReadyButton";
 import ErrorText from "./ErrorText";
+import TurnInfo from "./TurnInfo";
+import GameOverInfo from "./GameOverInfo";
 
 const GameSection = ({
   socket,
@@ -16,6 +18,7 @@ const GameSection = ({
   leaderId,
   currentSpeaker,
   currentObserver,
+  winnerTeam,
   currentWord,
   blueTeamPass,
   redTeamPass,
@@ -61,14 +64,15 @@ const GameSection = ({
             redTeamPass={redTeamPass}
           />
         );
-      case GameState.FINISHED:
-        return <>game finished</>;
+      case GameState.OVER:
+        return <GameOverInfo winnerTeam={winnerTeam} />;
     }
   })();
 
   return (
     <div className="lobby-teams">
       <Team
+        gameState={gameState}
         team={blueTeam}
         joinTeam={joinBlue}
         teamColor={"blue"}
@@ -76,6 +80,7 @@ const GameSection = ({
       />
       {middleSection}
       <Team
+        gameState={gameState}
         team={redTeam}
         joinTeam={joinRed}
         teamColor={"red"}

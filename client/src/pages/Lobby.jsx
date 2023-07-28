@@ -29,6 +29,7 @@ const Lobby = () => {
   const [currentSpeaker, setCurrentSpeaker] = useState(null);
   const [currentObserver, setCurrentObserver] = useState(null);
   const [gameState, setGameState] = useState(GameState.IDLE);
+  const [errorText, setErrorText] = useState("");
 
   const connectToSocket = () => {
     const assignTeams = (players) => {
@@ -86,6 +87,13 @@ const Lobby = () => {
       setCurrentObserver(roomObj.current_observer);
       setGameState(roomObj.game_state);
     });
+    socket.on(
+      "game_start_error_not_enough_player",
+      (game_state, error_text) => {
+        setGameState(game_state);
+        setErrorText(error_text);
+      }
+    );
     socket.on(
       "team_score_up",
       (blue_team_score, red_team_score, current_word) => {
@@ -158,6 +166,7 @@ const Lobby = () => {
             socket={socketParam}
             waitingPlayers={waitingPlayers}
             gameState={gameState}
+            errorText={errorText}
             lobbyId={lobbyId}
             blueTeam={blueTeam}
             redTeam={redTeam}

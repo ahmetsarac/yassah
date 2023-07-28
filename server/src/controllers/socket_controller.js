@@ -73,6 +73,7 @@ const socketController = (io) => {
       let roomObj = io.sockets.adapter.rooms.get(lobby_id);
       roomObj.blue_team_score = 0;
       roomObj.red_team_score = 0;
+      roomObj.initial_pass = initial_pass;
       roomObj.blue_team_pass = initial_pass;
       roomObj.red_team_pass = initial_pass;
       roomObj.round = round;
@@ -86,7 +87,19 @@ const socketController = (io) => {
       roomObj.current_observer = roomObj.players.red_team[0];
       roomObj.game_state = GameState.READY;
 
-      io.to(lobby_id).emit("game_start_object", roomObj);
+      if (
+        roomObj.players.blue_team.length < 2 &&
+        roomObj.players.red_team.length < 2
+      ) {
+        roomObj.game_state = GameState.ERROR;
+        io.to(lobby_id).emit(
+          "game_start_error_not_enough_player",
+          roomObj.game_state,
+          "Takimlarda yeterince oyuncu yok."
+        );
+      } else {
+        io.to(lobby_id).emit("game_start_object", roomObj);
+      }
     });
 
     socket.on("correct_button_pressed", (lobby_id, team) => {
@@ -94,9 +107,9 @@ const socketController = (io) => {
       roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 
       if (team == "BLUE") {
-        roomObj.blue_team_score += 1;
+        roomObj.blue_team_score++;
       } else {
-        roomObj.red_team_score += 1;
+        roomObj.red_team_score++;
       }
       io.to(lobby_id).emit(
         "team_score_up",
@@ -130,9 +143,9 @@ const socketController = (io) => {
       roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 
       if (team == "BLUE") {
-        roomObj.blue_team_score -= 1;
+        roomObj.blue_team_score--;
       } else {
-        roomObj.red_team_score -= 1;
+        roomObj.red_team_score--;
       }
       io.to(lobby_id).emit(
         "team_yassah",
@@ -179,7 +192,8 @@ const timerZero = (roomObj) => {
       : roomObj.players.blue_team[
           roomObj.current_speaker_index % roomObj.players.blue_team.length
         ];
-  console.log(roomObj);
+  roomObj.blue_team_pass = roomObj.initial_pass;
+  roomObj.red_team_pass = roomObj.initial_pass;
 };
 
 export default socketController;

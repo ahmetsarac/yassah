@@ -3,13 +3,12 @@ import { Fragment, useState } from "react";
 const Options = ({ socket, leaderId, lobbyId }) => {
   const roundArr = [1, 2, 3, 4, 5];
   const passArr = [3, 4, 5];
-  const timeArr = ["30 sn", "45 sn", "60 sn", "90 sn", "120 sn"];
+  const timeArr = ["3 sn", "30 sn", "45 sn", "60 sn", "90 sn", "120 sn"];
   const [passNumber, setPassNumber] = useState(3);
   const [time, setTime] = useState(timeArr[0]);
   const [round, setRound] = useState(roundArr[0]);
 
   const handleClick = (event) => {
-    //event.preventDefault();
     socket.emit("game_start", lobbyId, passNumber, round, time.split(" ")[0]);
   };
 

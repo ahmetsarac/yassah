@@ -2,6 +2,7 @@ const Card = ({
   socket,
   lobbyId,
   currentSpeaker,
+  currentObserver,
   currentWord,
   blueTeamPass,
   redTeamPass,
@@ -65,19 +66,17 @@ const Card = ({
           </ul>
         </div>
       )}
-      {currentSpeaker &&
-        socket.id != currentSpeaker.id &&
-        socket.team != currentSpeaker.team && (
-          <div className="card-buttons">
-            <ul>
-              <li>
-                <button onClick={yassahButtonHandle} className="yassah-button">
-                  Yassah
-                </button>
-              </li>
-            </ul>
-          </div>
-        )}
+      {currentObserver && currentObserver.id == socket.id && (
+        <div className="card-buttons">
+          <ul>
+            <li>
+              <button onClick={yassahButtonHandle} className="yassah-button">
+                Yassah
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import GameSection from "../components/Lobby/GameSection";
 import LobbyForm from "../components/Lobby/LobbyForm";
 import Options from "../components/Lobby/Options";
 import GameInfo from "../components/Lobby/GameInfo";
+import GameState from "../../../server/src/util/game_state";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
@@ -19,23 +20,21 @@ const Lobby = () => {
   const [isJoined, setIsJoined] = useState(false);
   const [socketParam, setSocketParam] = useState(null);
   const [leaderId, setLeaderId] = useState(null);
-  const [timer, setTimer] = useState(null);
-  const [isGameStarted, setIsGameStarted] = useState(null);
+  const [timer, setTimer] = useState(0);
   const [blueTeamScore, setBlueTeamScore] = useState(0);
   const [redTeamScore, setRedTeamScore] = useState(0);
   const [blueTeamPass, setBlueTeamPass] = useState(0);
   const [redTeamPass, setRedTeamPass] = useState(0);
   const [currentWord, setCurrentWord] = useState({});
   const [currentSpeaker, setCurrentSpeaker] = useState(null);
-  var isStarted = null;
+  const [currentObserver, setCurrentObserver] = useState(null);
+  const [gameState, setGameState] = useState(GameState.IDLE);
 
   const connectToSocket = () => {
     const assignTeams = (players) => {
       setWaitingPlayers(players.waiting);
       setBlueTeam(players.blue_team);
       setRedTeam(players.red_team);
-      console.log("blue team ", blueTeam);
-      console.log("new player", players);
       if (!leaderId) setLeaderId(players.leader.id);
     };
     const socket = io(BASE_URL, {
@@ -66,19 +65,26 @@ const Lobby = () => {
       if (socket.id === id) socket.team = "RED";
     });
     socket.on("counter_start", (count) => {
-      if (isStarted === null) {
-        isStarted = true;
-        setIsGameStarted(true);
-      }
-      console.log(count);
       setTimer(count);
+    });
+    socket.on(
+      "counter_finish",
+      (game_state, current_speaker, current_observer) => {
+        setGameState(game_state);
+        setCurrentSpeaker(current_speaker);
+        setCurrentObserver(current_observer);
+      }
+    );
+    socket.on("ready_to_play_change", (game_state) => {
+      setGameState(game_state);
     });
     socket.on("game_start_object", (roomObj) => {
       setCurrentWord(roomObj.current_word);
       setBlueTeamPass(roomObj.blue_team_pass);
       setRedTeamPass(roomObj.red_team_pass);
       setCurrentSpeaker(roomObj.current_speaker);
-      console.log(roomObj);
+      setCurrentObserver(roomObj.current_observer);
+      setGameState(roomObj.game_state);
     });
     socket.on(
       "team_score_up",
@@ -151,12 +157,13 @@ const Lobby = () => {
           <GameSection
             socket={socketParam}
             waitingPlayers={waitingPlayers}
+            gameState={gameState}
             lobbyId={lobbyId}
             blueTeam={blueTeam}
             redTeam={redTeam}
             leaderId={leaderId}
             currentSpeaker={currentSpeaker}
-            isGameStarted={isGameStarted}
+            currentObserver={currentObserver}
             currentWord={currentWord}
             blueTeamPass={blueTeamPass}
             redTeamPass={redTeamPass}

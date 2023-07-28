@@ -1,4 +1,6 @@
 import WORDS from "../util/words.js";
+import assignTeams from "../util/assign_teams.js";
+import GameState from "../util/game_state.js";
 
 const socketController = (io) => {
   io.on("connection", (socket) => {
@@ -21,6 +23,7 @@ const socketController = (io) => {
       assignTeams(players, sockets);
       const roomObj = io.sockets.adapter.rooms.get(lobby_id);
       roomObj.players = players;
+      roomObj.game_state = GameState.IDLE;
       io.to(lobby_id).emit("new_player", roomObj.players, socket.id);
     });
 
@@ -44,31 +47,49 @@ const socketController = (io) => {
       io.to(lobby_id).emit("new_player_in_red", roomObj.players, socket.id);
     });
 
-    socket.on("game_start", async (lobby_id, initial_pass, round, time) => {
+    socket.on("ready_to_play", (lobby_id) => {
+      const roomObj = io.sockets.adapter.rooms.get(lobby_id);
+      roomObj.speaker_count++;
+      let time = roomObj.time;
+      io.to(lobby_id).volatile.emit("counter_start", time--);
+      roomObj.game_state = GameState.STARTED;
+      io.to(lobby_id).emit("ready_to_play_change", roomObj.game_state);
+      var countdown = setInterval(function () {
+        io.to(lobby_id).volatile.emit("counter_start", time--);
+        if (time === -1) {
+          clearInterval(countdown);
+          timerZero(roomObj);
+          io.to(lobby_id).emit(
+            "counter_finish",
+            roomObj.game_state,
+            roomObj.current_speaker,
+            roomObj.current_observer
+          );
+        }
+      }, 1000);
+    });
+
+    socket.on("game_start", (lobby_id, initial_pass, round, time) => {
       let roomObj = io.sockets.adapter.rooms.get(lobby_id);
       roomObj.blue_team_score = 0;
       roomObj.red_team_score = 0;
       roomObj.blue_team_pass = initial_pass;
       roomObj.red_team_pass = initial_pass;
       roomObj.round = round;
-      roomObj.current_word = WORDS[0];
-      roomObj.current_speaker = { id: socket.id, team: socket.team };
+      roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
+      roomObj.current_team = "BLUE";
+      roomObj.current_speaker_index = 0;
+      roomObj.current_observer_index = 0;
+      roomObj.speaker_count = 0;
+      roomObj.time = time;
+      roomObj.current_speaker = roomObj.players.blue_team[0];
       roomObj.current_observer = roomObj.players.red_team[0];
-      console.log(roomObj);
+      roomObj.game_state = GameState.READY;
 
       io.to(lobby_id).emit("game_start_object", roomObj);
-      var countdown = setInterval(function () {
-        io.to(lobby_id).volatile.emit("counter_start", time);
-        time--;
-        if (time === -1) {
-          clearInterval(countdown);
-        }
-      }, 1000);
     });
 
     socket.on("correct_button_pressed", (lobby_id, team) => {
-      let currentRoom = socket.rooms.values();
-      console.log(currentRoom);
       let roomObj = io.sockets.adapter.rooms.get(lobby_id);
       roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 
@@ -125,26 +146,40 @@ const socketController = (io) => {
   });
 };
 
-const assignTeams = (players, sockets) => {
-  const waiting_players = [];
-  const players_of_blue = [];
-  const players_of_red = [];
-  let leader;
-  for (var player of sockets) {
-    const playerObj = {
-      id: player.id,
-      username: player.username,
-      team: player.team,
-    };
-    if (player.team == "WAITING") waiting_players.push(playerObj);
-    if (player.team == "BLUE") players_of_blue.push(playerObj);
-    if (player.team == "RED") players_of_red.push(playerObj);
-    if (player.is_leader) leader = playerObj;
+const timerZero = (roomObj) => {
+  roomObj.game_state = GameState.READY;
+  if (roomObj.speaker_count % 2 == 0) {
+    roomObj.current_speaker_index++;
   }
-  players.leader = leader;
-  players.waiting = waiting_players;
-  players.blue_team = players_of_blue;
-  players.red_team = players_of_red;
+  if (
+    roomObj.speaker_count %
+      (roomObj.players.blue_team.length + roomObj.players.red_team.length) ==
+    0
+  ) {
+    roomObj.round--;
+  }
+  if (roomObj.round == 0) {
+    roomObj.game_state = GameState.FINISHED;
+    console.log("game finish");
+  }
+  roomObj.current_team = roomObj.current_team == "BLUE" ? "RED" : "BLUE";
+  roomObj.current_speaker =
+    roomObj.current_team == "BLUE"
+      ? roomObj.players.blue_team[
+          roomObj.current_speaker_index % roomObj.players.blue_team.length
+        ]
+      : roomObj.players.red_team[
+          roomObj.current_speaker_index % roomObj.players.red_team.length
+        ];
+  roomObj.current_observer =
+    roomObj.current_team == "BLUE"
+      ? roomObj.players.red_team[
+          roomObj.current_speaker_index % roomObj.players.red_team.length
+        ]
+      : roomObj.players.blue_team[
+          roomObj.current_speaker_index % roomObj.players.blue_team.length
+        ];
+  console.log(roomObj);
 };
 
 export default socketController;

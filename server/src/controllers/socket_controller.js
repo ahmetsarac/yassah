@@ -6,10 +6,15 @@ import db from "../util/db.js";
 const socketController = (io) => {
   io.on("connection", (socket) => {
     socket.on("disconnect", async (reason) => {
+      if (reason === "io server disconnect") {
+        socket.connect();
+      }
+      console.log("socket disconnected");
       const lobby_id = socket.handshake.query.lobbyId;
       const roomObj = io.sockets.adapter.rooms.get(lobby_id);
       socket.leave(lobby_id);
       const sockets = await io.in(lobby_id).fetchSockets();
+      console.log("sockets: ", sockets);
       if (sockets.length == 0) {
         await db.collection("lobbies").deleteOne({ id: lobby_id });
         return;

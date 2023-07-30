@@ -55,6 +55,9 @@ const Lobby = () => {
         creatorFromHome ? true : false
       );
     });
+    window.onpopstate = (e) => {
+      socket.disconnect();
+    };
     socket.on("new_player", (players, id) => {
       assignTeams(players);
       if (socket.id === id) socket.team = "WAITING";

@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import io from "socket.io-client";
 import LobbyTitle from "../components/Lobby/LobbyTitle";
 import LobbyNotFound from "../components/Lobby/LobbyNotFound";
@@ -11,7 +11,8 @@ import GameState from "../../../server/src/util/game_state";
 
 const Lobby = () => {
   const { lobbyId } = useParams();
-  const { creatorFromHome } = useLocation().state || {};
+  var { creatorFromHome } = useLocation().state || {};
+  const navigate = useNavigate();
   const [creator, setCreator] = useState("");
   const [waitingPlayers, setWaitingPlayers] = useState([]);
   const [name, setName] = useState("");
@@ -139,6 +140,7 @@ const Lobby = () => {
       setCreator(creatorFromHome);
       setIsJoined(true);
       connectToSocket();
+      navigate(".", { replace: true });
     } else {
       checkLobby();
     }

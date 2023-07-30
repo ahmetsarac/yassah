@@ -4,6 +4,7 @@ const HomeForm = ({ handleSubmit, setName }) => {
       <input
         className="name-input"
         type="text"
+        placeholder="mahlas"
         onChange={(event) => {
           setName(event.target.value);
         }}

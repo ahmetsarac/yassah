@@ -1,6 +1,7 @@
 import WORDS from "../util/words.js";
 import assignTeams from "../util/assign_teams.js";
 import GameState from "../util/game_state.js";
+import db from "../util/db.js";
 
 const socketController = (io) => {
   io.on("connection", (socket) => {
@@ -9,6 +10,10 @@ const socketController = (io) => {
       const roomObj = io.sockets.adapter.rooms.get(lobby_id);
       socket.leave(lobby_id);
       const sockets = await io.in(lobby_id).fetchSockets();
+      if (sockets.length == 0) {
+        await db.collection("lobbies").deleteOne({ id: lobby_id });
+        return;
+      }
       const players = {};
       assignTeams(players, sockets);
       roomObj.players = players;
@@ -206,6 +211,7 @@ const timerZero = (roomObj) => {
         ];
   roomObj.blue_team_pass = roomObj.initial_pass;
   roomObj.red_team_pass = roomObj.initial_pass;
+  roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 };
 
 export default socketController;

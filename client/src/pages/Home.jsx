@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import HomeTitle from "../components/Home/HomeTitle";
 import HomeForm from "../components/Home/HomeForm";
 

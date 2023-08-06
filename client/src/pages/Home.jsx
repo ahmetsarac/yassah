@@ -25,8 +25,19 @@ const Home = () => {
 
   return (
     <div className="home">
-      <HomeTitle title="Yassah" />
-      <HomeForm handleSubmit={handleSubmit} setName={setName} />
+      <HomeTitle title="yassah" />
+      <HomeForm
+        handleSubmit={handleSubmit}
+        setName={setName}
+        placeholder={"mahlas"}
+        buttonText={"lobi olustur"}
+      />
+      <HomeForm
+        handleSubmit={handleSubmit}
+        setName={setName}
+        placeholder={"lobi id"}
+        buttonText={"lobiye katil"}
+      />
     </div>
   );
 };

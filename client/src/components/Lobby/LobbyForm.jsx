@@ -1,13 +1,14 @@
 const LobbyForm = ({ handleSubmit, setName }) => {
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="lobby-form" onSubmit={handleSubmit}>
       <input
         type="text"
+        placeholder="mahlas"
         onChange={(event) => {
           setName(event.target.value);
         }}
       />
-      <button type="submit">Join the lobby</button>
+      <button type="submit">lobiye katıl</button>
     </form>
   );
 };

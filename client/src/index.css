@@ -5,13 +5,23 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-family: sans-serif;
+	font-family: 'Sigmar', cursive;
+	letter-spacing: 0.08em;
+}
+*:focus {
+	outline: none;
+}
+
+:root {
+	--background-color: #35aef3;
+	--primary-color: #d6fd69;
+	--blue-color: #1158f0;
 }
 
 /* Full height */
 html, body {
 	height: 100%;
-	background-color: #454545;
+	background-color: var(--background-color);
 }
 
 #root {
@@ -29,9 +39,8 @@ html, body {
 
 .home .home-title {
 	font-size: 64px;
-	color: #FF6000;
+	color: var(--primary-color);
 	letter-spacing: 5px;
-	font-family: 'Sigmar', cursive;
 }
 
 .home .home-form {
@@ -55,20 +64,21 @@ html, body {
 	font-family: 'Sigmar', cursive;
 	margin: 5px;
 	flex-grow: 1;
-	border-radius: 10%;
+	border-radius: 8%;
 	background-color: transparent;
 	color: #ffffff;
-	border: 1px solid #FF6000;
+	border: 1px solid var(--primary-color);
 	cursor: pointer;
 }
 
 .home .home-form .home-form-button:hover {
-	background-color: #FF6000;
+	background-color: var(--primary-color);
+	color: #6b6b6b;
 }
 
 /* Lobby */
 .lobby {
-	color: #FF6000;
+	color: var(--primary-color);
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -76,10 +86,34 @@ html, body {
 	align-items: center;
 }
 
+.center-item {
+	justify-content: center;
+}
+
 .lobby-title {
 	font-family: 'Sigmar', cursive;
 	letter-spacing: 0.2rem;
 	font-size: 3rem;
+}
+
+.lobby-form input, .lobby-form button{
+	padding: 5px;
+	margin: 5px;
+	border: none;
+	border-radius: 10px;
+}
+
+.lobby-form button {
+	cursor: pointer;
+	border-radius: 8%;
+	background-color: transparent;
+	color: #ffffff;
+	border: 1px solid var(--primary-color);
+}
+
+.lobby-form button:hover {
+	background-color: var(--primary-color);
+	color: #6b6b6b;
 }
 
 .lobby-teams {
@@ -118,7 +152,7 @@ html, body {
 }
 
 .blue-team {
-	background-color: #26b8f7;
+	background-color: var(--blue-color);
 }
 
 .red-team {
@@ -156,7 +190,7 @@ html, body {
 }
 
 .game-info-team-blue {
-	color: #26b8f7;
+	color: var(--blue-color);
 }
 
 .game-info-timer {

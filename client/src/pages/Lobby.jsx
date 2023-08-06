@@ -75,13 +75,7 @@ const Lobby = () => {
     });
     socket.on(
       "counter_finish",
-      (
-        game_state,
-        winner_team,
-        current_speaker,
-        current_observer,
-        current_word
-      ) => {
+      (game_state, winner_team, current_speaker, current_observer) => {
         setGameState(game_state);
         setWinnerTeam(winner_team);
         setCurrentSpeaker(current_speaker);
@@ -166,40 +160,45 @@ const Lobby = () => {
   };
 
   return (
-    <div className="lobby">
+    <div className={`lobby ${!isJoined && "center-item"}`}>
       {creator ? (
         <Fragment>
           <LobbyTitle creator={creator} />
-          <Options
-            gameState={gameState}
-            socket={socketParam}
-            leaderId={leaderId}
-            lobbyId={lobbyId}
-          />
-          <GameInfo
-            timer={timer}
-            blueTeamScore={blueTeamScore}
-            redTeamScore={redTeamScore}
-          />
-          <GameSection
-            socket={socketParam}
-            waitingPlayers={waitingPlayers}
-            gameState={gameState}
-            errorText={errorText}
-            lobbyId={lobbyId}
-            blueTeam={blueTeam}
-            redTeam={redTeam}
-            leaderId={leaderId}
-            currentSpeaker={currentSpeaker}
-            currentObserver={currentObserver}
-            winnerTeam={winnerTeam}
-            currentWord={currentWord}
-            blueTeamPass={blueTeamPass}
-            redTeamPass={redTeamPass}
-          />
+          {isJoined ? (
+            <>
+              <Options
+                gameState={gameState}
+                socket={socketParam}
+                leaderId={leaderId}
+                lobbyId={lobbyId}
+              />
 
-          {!isJoined && (
-            <LobbyForm handleSubmit={handleSubmit} setName={setName} />
+              <GameInfo
+                timer={timer}
+                blueTeamScore={blueTeamScore}
+                redTeamScore={redTeamScore}
+              />
+              <GameSection
+                socket={socketParam}
+                waitingPlayers={waitingPlayers}
+                gameState={gameState}
+                errorText={errorText}
+                lobbyId={lobbyId}
+                blueTeam={blueTeam}
+                redTeam={redTeam}
+                leaderId={leaderId}
+                currentSpeaker={currentSpeaker}
+                currentObserver={currentObserver}
+                winnerTeam={winnerTeam}
+                currentWord={currentWord}
+                blueTeamPass={blueTeamPass}
+                redTeamPass={redTeamPass}
+              />
+            </>
+          ) : (
+            <>
+              <LobbyForm handleSubmit={handleSubmit} setName={setName} />
+            </>
           )}
         </Fragment>
       ) : (

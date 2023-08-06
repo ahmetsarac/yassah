@@ -6,8 +6,7 @@ const WaitingPlayers = ({ waitingPlayers, leaderId }) => {
           if (player.team == "WAITING") {
             return (
               <h2 key={index}>
-                player {index}: {player.username}{" "}
-                {player.id == leaderId && "👑"}
+                {player.username} {player.id == leaderId && "👑"}
               </h2>
             );
           }

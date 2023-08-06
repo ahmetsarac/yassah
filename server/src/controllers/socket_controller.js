@@ -9,12 +9,10 @@ const socketController = (io) => {
       if (reason === "io server disconnect") {
         socket.connect();
       }
-      console.log("socket disconnected");
       const lobby_id = socket.handshake.query.lobbyId;
       const roomObj = io.sockets.adapter.rooms.get(lobby_id);
       socket.leave(lobby_id);
       const sockets = await io.in(lobby_id).fetchSockets();
-      console.log("sockets: ", sockets);
       if (sockets.length == 0) {
         await db.collection("lobbies").deleteOne({ id: lobby_id });
         return;
@@ -135,8 +133,6 @@ const socketController = (io) => {
         roomObj.red_team_score,
         roomObj.current_word
       );
-      console.log("blue team score: ", roomObj.blue_team_score);
-      console.log("red team score: ", roomObj.red_team_score);
     });
 
     socket.on("pass_button_pressed", (lobby_id, team) => {
@@ -171,8 +167,6 @@ const socketController = (io) => {
         roomObj.red_team_score,
         roomObj.current_word
       );
-      console.log("blue team score: ", roomObj.blue_team_score);
-      console.log("red team score: ", roomObj.red_team_score);
     });
   });
 };
@@ -200,7 +194,6 @@ const timerZero = (roomObj) => {
       winner_team = "DRAW";
     }
     roomObj.winner_team = winner_team;
-    console.log("game finish");
   }
   roomObj.current_team = roomObj.current_team == "BLUE" ? "RED" : "BLUE";
   roomObj.current_speaker =

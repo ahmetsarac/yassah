@@ -19,7 +19,7 @@ const Team = ({ gameState, team, joinTeam, teamColor, leaderId }) => {
       </ul>
       {show && (
         <button className="join-team-button" onClick={joinTeam}>
-          Join the {teamColor} team
+          {teamColor == "blue" ? "mavi" : "kırmızı"} takıma katıl
         </button>
       )}
     </div>

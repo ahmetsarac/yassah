@@ -75,11 +75,18 @@ const Lobby = () => {
     });
     socket.on(
       "counter_finish",
-      (game_state, winner_team, current_speaker, current_observer) => {
+      (
+        game_state,
+        winner_team,
+        current_speaker,
+        current_observer,
+        current_word
+      ) => {
         setGameState(game_state);
         setWinnerTeam(winner_team);
         setCurrentSpeaker(current_speaker);
         setCurrentObserver(current_observer);
+        setCurrentWord(current_word);
       }
     );
     socket.on("ready_to_play_change", (game_state) => {

@@ -76,7 +76,8 @@ const socketController = (io) => {
             roomObj.game_state,
             roomObj.winner_team,
             roomObj.current_speaker,
-            roomObj.current_observer
+            roomObj.current_observer,
+            roomObj.current_word
           );
         }
       }, 1000);

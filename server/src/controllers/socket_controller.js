@@ -65,7 +65,12 @@ const socketController = (io) => {
       let time = roomObj.time;
       io.to(lobby_id).volatile.emit("counter_start", time--);
       roomObj.game_state = GameState.STARTED;
-      io.to(lobby_id).emit("ready_to_play_change", roomObj.game_state);
+      roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
+      io.to(lobby_id).emit(
+        "ready_to_play_change",
+        roomObj.game_state,
+        roomObj.current_word
+      );
       var countdown = setInterval(function () {
         io.to(lobby_id).volatile.emit("counter_start", time--);
         if (time === -1) {
@@ -76,8 +81,7 @@ const socketController = (io) => {
             roomObj.game_state,
             roomObj.winner_team,
             roomObj.current_speaker,
-            roomObj.current_observer,
-            roomObj.current_word
+            roomObj.current_observer
           );
         }
       }, 1000);
@@ -217,7 +221,6 @@ const timerZero = (roomObj) => {
         ];
   roomObj.blue_team_pass = roomObj.initial_pass;
   roomObj.red_team_pass = roomObj.initial_pass;
-  roomObj.current_word = WORDS[Math.floor(Math.random() * WORDS.length)];
 };
 
 export default socketController;

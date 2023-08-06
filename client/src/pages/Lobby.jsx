@@ -86,11 +86,11 @@ const Lobby = () => {
         setWinnerTeam(winner_team);
         setCurrentSpeaker(current_speaker);
         setCurrentObserver(current_observer);
-        setCurrentWord(current_word);
       }
     );
-    socket.on("ready_to_play_change", (game_state) => {
+    socket.on("ready_to_play_change", (game_state, current_word) => {
       setGameState(game_state);
+      setCurrentWord(current_word);
     });
     socket.on("game_start_object", (roomObj) => {
       setCurrentWord(roomObj.current_word);

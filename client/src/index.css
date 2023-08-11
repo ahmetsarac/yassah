@@ -100,7 +100,7 @@ html, body {
 	padding: 5px;
 	margin: 5px;
 	border: none;
-	border-radius: 10px;
+	border-radius: 8%;
 }
 
 .lobby-form button {
@@ -149,6 +149,18 @@ html, body {
 	padding: 5%;
 	cursor: pointer;
 	width: 100%;
+	background-color: transparent;
+	border-radius: 8%;
+}
+
+.join-blue:hover {
+	background-color: var(--blue-color);
+	color: #fff;
+}
+
+.join-red:hover {
+	background-color: red;
+	color: #fff;
 }
 
 .blue-team {
@@ -163,15 +175,40 @@ html, body {
 .options {
 	width: 40%;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
+	font-size: 1.3rem;
+}
+
+.options select{
+	padding: 5px;
+	background-color: var(--primary-color);
+	font-size: 1.2rem;
+	color: #6b6b6b;
+	border: none;
+	border-radius: 0;
+}
+
+.options select option:hover{
+	cursor: pointer;
 }
 
 .options button {
 	padding: 10px;
 	margin: 10px;
 	cursor: pointer;
+	background-color: transparent;
+	color: #fff;
+	font-size: 1rem;
+	border-radius: 8%;
 }
+
+.options button:hover {
+	background-color: var(--primary-color);
+	color: #6b6b6b;
+
+}
+
 
 .options label{
 	padding: 10px;
@@ -199,6 +236,48 @@ html, body {
 
 .game-info-team-red {
 	color: #f72637;
+}
+
+/* Middle Section */
+.ready {
+	height: 60%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-size: 1.3rem;
+}
+
+.ready button {
+	margin-top: 10px;
+	padding: 10px;
+	background-color: transparent;
+	cursor: pointer;
+	color: #fff;
+	font-size: 1.2rem;
+	border: 3px solid var(--primary-color);
+	border-radius: 8%;
+}
+
+.ready button:hover {
+	background-color: var(--primary-color);
+	color: #6b6b6b;
+}
+
+/* Turn Info */
+.turn-info {
+	height: 60%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-size: 1.3rem;
+}
+
+.turn-blue {
+	color: var(--blue-color);
+}
+
+.turn-red {
+	color: red;
 }
 
 /* Cards */

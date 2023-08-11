@@ -36,10 +36,10 @@ const Options = ({ gameState, socket, leaderId, lobbyId }) => {
         {socket && socket.id == leaderId ? (
           <Fragment>
             <button className="start-button" onClick={handleClick}>
-              Baslat
+              baslat
             </button>
             <div className="round-setting">
-              <label>Round</label>
+              <label>round</label>
               <select value={round} onChange={handleRoundChange}>
                 {roundArr.map((element, index) => {
                   return (
@@ -51,7 +51,7 @@ const Options = ({ gameState, socket, leaderId, lobbyId }) => {
               </select>
             </div>
             <div className="time-setting">
-              <label>Sure</label>
+              <label>süre</label>
               <select value={time} onChange={handleTimeChange}>
                 {timeArr.map((element, index) => {
                   return (
@@ -63,7 +63,7 @@ const Options = ({ gameState, socket, leaderId, lobbyId }) => {
               </select>
             </div>
             <div className="pass-setting">
-              <label>Pas hakki</label>
+              <label>pas hakki</label>
               <select value={passNumber} onChange={handlePassChange}>
                 {passArr.map((element, index) => {
                   return (

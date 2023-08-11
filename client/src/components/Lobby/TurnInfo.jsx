@@ -1,8 +1,19 @@
 const TurnInfo = ({ currentSpeaker, currentObserver }) => {
   return (
-    <p>
-      Anlatan {currentSpeaker.username}, Gozetleyen {currentObserver.username}
-    </p>
+    <div className="turn-info">
+      <p>
+        anlatan:{" "}
+        <span className={`turn-${currentSpeaker.team.toLowerCase()}`}>
+          {`${currentSpeaker.username}`}
+        </span>
+      </p>
+      <p>
+        gözetleyen:{" "}
+        <span className={`turn-${currentObserver.team.toLowerCase()}`}>
+          {currentObserver.username}
+        </span>
+      </p>
+    </div>
   );
 };
 

@@ -5,8 +5,8 @@ const ReadyButton = ({ socket, lobbyId }) => {
 
   return (
     <div className="ready">
-      <p>Anlatmaya hazir misin?</p>
-      <button onClick={handleClick}>Hazirim</button>
+      <p>anlatmaya hazır mısın?</p>
+      <button onClick={handleClick}>hazırım</button>
     </div>
   );
 };

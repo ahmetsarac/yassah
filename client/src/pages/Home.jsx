@@ -5,6 +5,8 @@ import HomeForm from "../components/Home/HomeForm";
 
 const Home = () => {
   const [name, setName] = useState("");
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -12,19 +14,35 @@ const Home = () => {
     if (!name) {
       return;
     }
-    const response = await fetch(`${BASE_URL}/api/lobby`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name }),
-    });
-    const json = await response.json();
-    navigate(`${json.id}`, { state: { creatorFromHome: name } });
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`${BASE_URL}/api/lobby`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+      
+      if (response.ok) {
+        console.log("response is ok");
+        const json = await response.json();
+        navigate(`${json.id}`, { state: { creatorFromHome: name } });
+      }
+        setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+         console.log(error);
+      setError(error);
+    }
   };
 
   return (
     <div className="home">
+      {error && <div>error: ${error.message.toString()}</div>}
+      {isLoading && <div>Loading...</div>}
       <HomeTitle title="yassah" />
       <HomeForm
         handleSubmit={handleSubmit}

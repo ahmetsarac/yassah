@@ -5,6 +5,9 @@ import db from "../util/db.js";
 
 const socketController = (io) => {
   io.on("connection", (socket) => {
+    
+    console.log(`[INFO] WebSocket connection established: ${socket.id}`);
+
     socket.on("disconnect", async (reason) => {
       if (reason === "io server disconnect") {
         socket.connect();

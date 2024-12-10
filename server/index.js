@@ -27,13 +27,13 @@ const io = new Server(server, {
 socketController(io);
 
 if (db) {
-  console.log("connected to the database");
+  console.log("[INFO] Connected to the database.");
 
-  console.log(`${db.databaseName}`);
+  console.log(`[INFO] Database name: ${db.databaseName}.`);
   server.listen(port, () => {
-    console.log(`listening on port ${port}`);
+    console.log(`[INFO] Listening on port ${port}.`);
   });
 } else {
-  console.log("database connection error");
+  console.log("[ERROR] Database connection couldn't established.");
   process.exit(1);
 }
